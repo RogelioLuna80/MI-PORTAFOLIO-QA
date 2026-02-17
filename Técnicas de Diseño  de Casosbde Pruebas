@@ -1,0 +1,129 @@
+
+
+---
+
+Parte 1: Teoría (1 hora) - Resumen Rápido
+
+Aquí tienes los conceptos clave de cada técnica para que los estudies o los tengas como referencia.
+
+1. Partición Equivalente (Clases de Equivalencia)
+
+· Objetivo: Reducir la cantidad de casos de prueba sin perder efectividad.
+· Concepto: Se dividen los datos de entrada en conjuntos o "particiones" donde se espera que el sistema se comporte de la misma manera.
+· Regla de oro: Si funciona para un valor de la partición, debería funcionar para todos. Si falla para uno, probablemente fallará para todos.
+· Ejemplo: Un campo que acepta edades de 18 a 65 años.
+  · Válido: 18-65 (probamos con 30)
+  · Inválido (menor): 0-17 (probamos con 15)
+  · Inválido (mayor): 66-120 (probamos con 70)
+
+2. Análisis de Valores Límite (Boundary Value Analysis - BVA)
+
+· Objetivo: Probar los bordes de las particiones, donde es más probable que ocurran errores.
+· Concepto: Nos enfocamos en el valor mínimo, máximo, justo por encima y justo por debajo de los límites.
+· Ejemplo: Mismo campo de edad (18 a 65).
+  · Límite inferior: 17 (inválido), 18 (válido), 19 (válido).
+  · Límite superior: 64 (válido), 65 (válido), 66 (inválido).
+
+3. Tablas de Decisión
+
+· Objetivo: Probar combinaciones de condiciones que generan diferentes resultados (ideal para lógicas de negocio).
+· Concepto: Es como una matriz donde las filas son las condiciones y acciones, y las columnas son las reglas de negocio.
+· Ejemplo: Descuento en una tienda.
+  · Condiciones: ¿Es cliente VIP? ¿Monto > 100€?
+  · Acción: Aplicar descuento del 20%.
+
+Condiciones Regla 1 Regla 2 Regla 3 Regla 4
+¿Es VIP? Sí Sí No No
+¿Monto > 100€? Sí No Sí No
+Acción: Descuento 20% 0% 0% 0%
+
+4. Transición de Estados
+
+· Objetivo: Probar el cambio de estado de un sistema ante ciertos eventos.
+· Concepto: Se dibuja un diagrama con estados (ej: "Esperando contraseña", "Validando", "Conectado") y las flechas indican los eventos que provocan el cambio.
+· Ejemplo: Inicio de sesión.
+  · Estado: Conectado. Evento: Cerrar sesión. Nuevo Estado: Desconectado.
+  · Estado: Desconectado. Evento: Login correcto. Nuevo Estado: Conectado.
+
+---
+
+Parte 2: Práctica (2 horas) - Formulario de Registro
+
+Ahora vamos a aplicar la teoría a un caso concreto. Tu tarea es escribir los casos de prueba en un archivo (puede ser Excel, .txt o .md).
+
+Contexto del Módulo: Registro de Usuario
+
+Estamos probando la página de registro de una aplicación web con los siguientes campos:
+
+1. Nombre de Usuario:
+   · Obligatorio.
+   · Longitud: Mínimo 5 caracteres, Máximo 15.
+   · Solo permite letras (a-z, A-Z) y números (0-9). Sin caracteres especiales.
+2. Correo Electrónico:
+   · Obligatorio.
+   · Debe tener formato válido (nombre@dominio.com).
+   · Longitud máxima total: 50 caracteres.
+3. Contraseña:
+   · Obligatorio.
+   · Longitud: Mínimo 8 caracteres.
+   · Debe contener al menos: una letra mayúscula, una minúscula, un número.
+4. Confirmar Contraseña:
+   · Obligatorio.
+   · Debe ser idéntica al campo "Contraseña".
+5. Edad:
+   · Opcional.
+   · Solo números enteros.
+   · Rango aceptado: 18 a 120 años.
+6. Términos y Condiciones:
+   · Checkbox obligatorio (debe estar marcado para registrarse).
+
+Ejercicio 1: Identificar Particiones y Límites
+
+Completa mentalmente o en un borrador las clases de equivalencia para los campos numéricos y de texto.
+
+· Nombre (5-15, alfanumérico):
+  · Válido: "usuario123"
+  · Inválido (muy corto): "abc"
+  · Inválido (muy largo): "usuario1234567890"
+  · Inválido (formato): "usuario@123"
+· Edad (18-120, opcional):
+  · Válido: 25
+  · Inválido (menor): 15
+  · Inválido (mayor): 130
+  · Inválido (dato no númerico): "treinta"
+  · Válido (vacío/opcional): (dejar en blanco)
+· Contraseña: (Mínimo 8, Mayus, Minus, Num)
+  · Válida: "Pass1234"
+  · Inválida (solo minus): "password"
+  · Inválida (sin numero): "Password"
+
+Ejercicio 2: Crear Casos de Prueba en Archivo
+
+Ahora escribe los casos de prueba formales. Puedes copiar esta tabla a un archivo de Excel, Google Sheets o un documento de texto estructurado.
+
+Formato sugerido para tu archivo (Casos_Registro.xlsx o Casos_Registro.md):
+
+ID Técnica Principal Campo(s) a Probar Descripción / Valores Resultado Esperado
+CP-001 Valores Límite Nombre Nombre con 4 caracteres ("abcd") Mensaje: "Mínimo 5 caracteres"
+CP-002 Valores Límite Nombre Nombre con 5 caracteres ("abcde") Registro exitoso (o pasa al siguiente campo)
+CP-003 Valores Límite Nombre Nombre con 15 caracteres ("abcdefghij12345") Registro exitoso
+CP-004 Valores Límite Nombre Nombre con 16 caracteres ("abcdefghij123456") Mensaje: "Máximo 15 caracteres"
+CP-005 Partición Eq. Nombre Caracteres especiales ("usuario@123") Mensaje: "Solo letras y números"
+CP-006 Partición Eq. Edad Edad 17 años Mensaje: "Debe ser mayor de 18"
+CP-007 Partición Eq. Edad Edad 121 años Mensaje: "Edad no válida"
+CP-008 Partición Eq. Edad Edad "veintiuno" (texto) Mensaje: "Debe ser un número"
+CP-009 Tabla Decisión Contraseña y Confirma Pass: "Pass1234" , Confirma: "Pass1234" Registro exitoso
+CP-010 Tabla Decisión Contraseña y Confirma Pass: "Pass1234" , Confirma: "Pass12345" Mensaje: "Las contraseñas no coinciden"
+CP-011 Transición Estado Checkbox Términos Intentar registrar sin marcar el Checkbox Mensaje: "Debe aceptar los términos" (El estado "Registrado" no se activa)
+CP-012 Tabla Decisión Completo (Caso Feliz) Usuario: "pepe123", Correo: pepe@test.com, Pass: "Pepe1234", Confirma: "Pepe1234", Edad: 30, Check: Sí Éxito. Redirige a pantalla de bienvenida o muestra "Registro completado".
+
+Entregable / Fin de la Práctica
+
+Al final de las 2 horas, debes tener un archivo (.txt, .xlsx, .csv o .md) con al menos 15-20 casos de prueba cubriendo:
+
+· Positivos (Camino feliz).
+· Negativos (Errores esperados).
+· Casos de límite (Borde).
+· Combinaciones usando tablas de decisión (especialmente para lógica de contraseñas y confirmación).
+
+¡Este archivo será tu entregable del día y una excelente base para ejecutar pruebas manuales más adelante
