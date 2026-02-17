@@ -1,0 +1,128 @@
+Tipos de Pruebas de Software
+
+Este documento describe los principales tipos de pruebas de software, clasificados según diferentes criterios. Se incluyen ejemplos prácticos para cada tipo, con el objetivo de comprender su aplicación en el desarrollo de software.
+
+1. Pruebas Funcionales vs No Funcionales
+
+Pruebas Funcionales
+
+Verifican que el software cumpla con los requisitos funcionales especificados. Se centran en qué hace el sistema.
+
+Ejemplo:
+
+· Requisito: "El sistema debe permitir a un usuario registrarse con email y contraseña."
+· Prueba: Introducir un email válido y una contraseña que cumpla las políticas, y comprobar que se crea la cuenta y se muestra un mensaje de éxito.
+
+Pruebas No Funcionales
+
+Evalúan aspectos como rendimiento, usabilidad, seguridad, etc. Se centran en cómo se comporta el sistema.
+
+Ejemplo:
+
+· Requisito no funcional: "El tiempo de respuesta del login no debe superar los 2 segundos con 1000 usuarios concurrentes."
+· Prueba: Ejecutar una prueba de carga simulando 1000 usuarios intentando loguearse simultáneamente y medir el tiempo de respuesta.
+
+---
+
+2. Pruebas de Caja Negra y Caja Blanca
+
+Pruebas de Caja Negra
+
+Se basan en la especificación de la funcionalidad, sin conocer el código interno. Se prueban entradas y salidas.
+
+Ejemplo (para una función de calculadora):
+
+· Función: sumar(a, b)
+· Casos de prueba:
+  · Entrada: (2, 3) → Salida esperada: 5
+  · Entrada: (-1, 1) → Salida esperada: 0
+  · Entrada: (0, 0) → Salida esperada: 0
+
+Pruebas de Caja Blanca
+
+Se basan en la estructura interna del código (rutas, condiciones, bucles). Requieren conocimiento del código fuente.
+
+Ejemplo (mismo código de suma, pero con lógica interna):
+
+```java
+public int sumar(int a, int b) {
+    if (a < 0) {
+        a = 0; // ejemplo de lógica interna
+    }
+    return a + b;
+}
+```
+
+Pruebas de caja blanca:
+
+· Camino donde a >= 0 (ej: a=2, b=3)
+· Camino donde a < 0 (ej: a=-1, b=3) para verificar que se ejecuta la línea a = 0.
+
+---
+
+3. Pirámide de Pruebas: Unitarias, Integración, Sistema, Aceptación
+
+Pruebas Unitarias
+
+Verifican el correcto funcionamiento de una unidad individual (método, clase, módulo) de forma aislada.
+
+Ejemplo (Java con JUnit):
+
+```java
+public class CalculadoraTest {
+    @Test
+    public void testSumar() {
+        Calculadora calc = new Calculadora();
+        int resultado = calc.sumar(2, 3);
+        assertEquals(5, resultado);
+    }
+}
+```
+
+Pruebas de Integración
+
+Verifican que los módulos o componentes funcionen correctamente al combinarse.
+
+Ejemplo:
+
+· Componentes: Módulo de autenticación y módulo de base de datos.
+· Prueba: Llamar al método login(usuario, pass) que consulta la BD para validar credenciales. Comprobar que si el usuario existe en BD, el login es exitoso.
+
+Pruebas de Sistema
+
+Validan el sistema completo, integrado, contra los requisitos funcionales y no funcionales. Se realizan en un entorno que simula el de producción.
+
+Ejemplo:
+
+· Probar un flujo completo de comercio electrónico:
+  1. El usuario se registra.
+  2. Inicia sesión.
+  3. Añade un producto al carrito.
+  4. Realiza el pago con tarjeta.
+  5. Recibe confirmación por email.
+  6. Verificar que el pedido queda registrado en la base de datos.
+
+Pruebas de Aceptación
+
+Determinan si el sistema cumple con los criterios de aceptación definidos por el cliente o usuario final. Pueden ser Alpha (en entorno controlado) o Beta (con usuarios reales).
+
+Ejemplo:
+
+· Criterio de aceptación: "El usuario debe poder recuperar su contraseña mediante un enlace enviado a su correo."
+· Prueba de aceptación: Un usuario real (o tester) solicita recuperar contraseña, comprueba que recibe el correo, hace clic en el enlace, establece una nueva contraseña y luego inicia sesión con ella. Si todo funciona, la prueba se considera aceptada.
+
+---
+
+Resumen
+
+Tipo de Prueba Enfoque Ejemplo práctico
+Funcional Comportamiento esperado Registro de usuario exitoso
+No funcional Rendimiento, seguridad, usabilidad Prueba de carga con 1000 usuarios
+Caja negra Entradas y salidas sin ver código Probar suma con datos variados
+Caja blanca Estructura interna del código Probar todas las ramas de un condicional
+Unitaria Una unidad aislada Test de un método sumar
+Integración Interacción entre módulos Login que consulta BD
+Sistema Sistema completo Flujo de compra completo
+Aceptación Validación con el cliente Recuperación de contraseña por email
+
+Estos tipos de pruebas se complementan y, aplicados en conjunto, aumentan la calidad y fiabilidad del software.
